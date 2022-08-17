@@ -6,15 +6,26 @@ interface SutTypes {
   sut: SignUpController
   emailValidatorStub: EmailValidator
 }
-
-const makeSut = (): SutTypes => {
+const makeEmailValidatorWithError = (): EmailValidator => {
   // Existem alguns tipos de Mock: Stub, Spy, Fake
   class EmailValidatorStub implements EmailValidator {
-    isValid (email: string): boolean {
+    isValid(email: string): boolean {
+      throw new Error()
+    }
+  }
+  return new EmailValidatorStub()
+}
+const makeEmailValidator = (): EmailValidator => {
+  // Existem alguns tipos de Mock: Stub, Spy, Fake
+  class EmailValidatorStub implements EmailValidator {
+    isValid(email: string): boolean {
       return true
     }
   }
-    const emailValidatorStub = new EmailValidatorStub()
+  return new EmailValidatorStub()
+}
+const makeSut = (): SutTypes => {
+    const emailValidatorStub = makeEmailValidator()
     const sut = new SignUpController(emailValidatorStub)
     return {
       sut,
@@ -112,12 +123,7 @@ describe('SignUp Controller', () => {
   })
 
   test('Should return 500 if EmailValidator throws exception', () => {
-    class EmailValidatorStub implements EmailValidator {
-      isValid(email: string): boolean {
-        throw new Error()
-      }
-    }
-    const emailValidatorStub = new EmailValidatorStub()
+    const emailValidatorStub = makeEmailValidatorWithError()
     const sut = new SignUpController(emailValidatorStub)
     const httpRequest = {
       body: {
