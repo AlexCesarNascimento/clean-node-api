@@ -2,9 +2,9 @@ import bcrypt from 'bcrypt'
 import { BcryptAdapter } from './bcrypt-adapter';
 
 jest.mock('bcrypt', () => ({
-	async hash (): Promise<string> {
-		return new Promise(resolve => resolve('hash'))
-	}
+  async hash (): Promise<string> {
+    return 'hash'
+  },
 }))
 
 const salt = 12
@@ -25,6 +25,16 @@ describe('Bcryp Adapter', () => {
 		const hash = await sut.encrypt('any_value')
 		expect(hash).toBe('hash')
 	})
+
+	test('Should throw if bcrypt throws exception', () => {
+		const sut = makeSut()
+    jest.spyOn(bcrypt, 'hash').mockImplementationOnce(async () => {
+      return new Promise((resolve, reject) => reject(new Error()))
+    })
+    const promise = sut.encrypt('any_value')
+		expect(promise).rejects.toThrow()
+	})
+
 })
 
 // 1 - Quero BcrypAdapter chame meu Bcryp passando os parametros corretos (teste de integração)
