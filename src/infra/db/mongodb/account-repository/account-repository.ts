@@ -23,12 +23,10 @@ import {
       const insertedAccount = await accountCollection.findOne({
         _id: result.insertedId,
       });
-      console.log(insertedAccount)
       const { _id, ...accountWithoutId } = insertedAccount as WithId<Document>;
       const parsedAccount = Object.assign({}, accountWithoutId, {
         id: _id,
       }) as unknown as AccountModel;
-      console.log(parsedAccount)
       return parsedAccount;
     }
   }
