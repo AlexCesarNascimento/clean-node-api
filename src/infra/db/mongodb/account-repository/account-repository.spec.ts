@@ -15,7 +15,7 @@ describe('Account Mongo Repository', () => {
   // vai limpar a tabela, apos cada teste
   beforeEach(async () => {
       const accountCollection = MongoHelper.getCollection('account')
-      accountCollection.deleteMany({})
+      await accountCollection.deleteMany({})
   })
 
   const makeSut = (): AccountMongoRepository => {

@@ -1,4 +1,4 @@
-import { Collection, MongoClient } from 'mongodb'
+import { Collection, MongoClient, WithId } from 'mongodb'
 
 // como a sintaxe de um objeto é igual a sintase de typagem do Typescript, precisamos passar um valor, e depois fazer o casting
 export const MongoHelper = {
@@ -15,4 +15,9 @@ export const MongoHelper = {
   getCollection(name: string): Collection {
     return this.client.db().collection(name);
   },
+
+  map: (collection: any): any => {
+    const { _id, ...collectionWithoutId } = collection as WithId<Document>;
+    return Object.assign({}, collectionWithoutId, { id: _id,}) as unknown;
+  }
 }
